@@ -28,6 +28,19 @@ public class DiccionarioDigitalTest {
     }
 
     @Test
+    public void testObtenerClaves(){
+        diccionario.definir("a", "2");
+        diccionario.definir("abril", "2");
+        diccionario.definir("abrio", "2");
+        diccionario.definir("bote", "2");
+        diccionario.definir("susano", "2");
+        diccionario.definir("salmon", "2");
+
+        String[] claves = new String[] {"a","abril","abrio","bote","salmon","susano"};
+        assertArrayEquals(claves, diccionario.clavesOrdenadas());
+    }
+
+    @Test
     public void testPertenece() {
         diccionario.definir("apple", "fruta");
 

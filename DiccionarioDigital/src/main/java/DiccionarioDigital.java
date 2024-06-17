@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
 public class DiccionarioDigital<K,T> {
+    private Nodo<T> raiz;
+    private int tamanio;
+
     private class Nodo<T> {
         ArrayList<Nodo<T>> siguientes;
         T definicion;
@@ -13,9 +16,6 @@ public class DiccionarioDigital<K,T> {
             } 
         }
     }
-
-    private Nodo<T> raiz;
-    private int tamanio;
 
     public DiccionarioDigital(){
         raiz = new Nodo<>();
@@ -108,5 +108,25 @@ public class DiccionarioDigital<K,T> {
         return tamanio;
     }
 
+    public String[] clavesOrdenadas() {
+        String[] claves = new String[tamanio];
+        int[] cantClaves = new int[1];
+        acumularClaves(raiz,"", claves, cantClaves);
+        return claves;
+    }
 
+    private void acumularClaves(Nodo<T> nodo, String prefijo, String[] claves, int[] cantClaves) {
+        if (nodo.definicion != null) {
+            claves[cantClaves[0]] = prefijo;
+            cantClaves[0]++;
+        }
+        for (int i = 0; i < 256; i++) {
+            if (nodo.siguientes.get(i) != null) {
+                char c = (char) i;
+                String nuevoPrefijo = prefijo + c;
+                acumularClaves(nodo.siguientes.get(i), nuevoPrefijo, claves, cantClaves);
+            }
+        }
+    }
+    
 }
