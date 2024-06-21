@@ -1,5 +1,7 @@
 package aed;
 
+import java.util.ArrayList;
+
 public class SistemaSIU {
     DiccionarioDigital<String, ICarrera> carreras;
     DiccionarioDigital<String, Integer> estudiantes;
@@ -16,17 +18,22 @@ public class SistemaSIU {
         estudiantes = new DiccionarioDigital<>();  //O(1)
         for (int i=0; i < infoMaterias.length; i++){
             IMateria imateria = new IMateria();  //O(1)
+
             ParCarreraMateria[] paresCarreraMateria = infoMaterias[i].getParesCarreraMateria();
             for (int j=0; j<paresCarreraMateria.length;j++){
+            
+                if (imateria.carrerasAsociadas.pertenece(paresCarreraMateria[j].nombreMateria) == false){
+                    imateria.carrerasAsociadas.definir(paresCarreraMateria[j].nombreMateria, new ListaEnlazada<ICarrera>());
+                }
                 if (carreras.pertenece(paresCarreraMateria[j].carrera)){  //O(|c|)
                     ICarrera icarrera = carreras.obtener(paresCarreraMateria[j].carrera);  //O(|c|)
                     icarrera.materias.definir(paresCarreraMateria[j].nombreMateria, imateria);
-                    imateria.carrerasAsociadas.definir(paresCarreraMateria[j].nombreMateria, icarrera);
+                    imateria.carrerasAsociadas.obtener(paresCarreraMateria[j].nombreMateria).agregarAtras(icarrera);
                 } else {
                     ICarrera icarrera = new ICarrera();
                     carreras.definir(paresCarreraMateria[j].carrera, icarrera);
                     icarrera.materias.definir(paresCarreraMateria[j].nombreMateria, imateria);
-                    imateria.carrerasAsociadas.definir(paresCarreraMateria[j].nombreMateria, icarrera);
+                    imateria.carrerasAsociadas.obtener(paresCarreraMateria[j].nombreMateria).agregarAtras(icarrera);
                 }
             }
         }
@@ -70,8 +77,12 @@ public class SistemaSIU {
 
         String[] nombresMateria = imateria.carrerasAsociadas.clavesOrdenadas(); // pongo en un array todos los nombres alternativos de la materia para acceder al dict
         for(String nombremateria : nombresMateria ){
-            ICarrera carreraAsociada = imateria.carrerasAsociadas.obtener(nombremateria);
-            carreraAsociada.materias.borrar(nombremateria); // borro la materia en su carrera
+            ListaEnlazada<ICarrera> carrerasAsociadaANombre = imateria.carrerasAsociadas.obtener(nombremateria);
+            Iterador<ICarrera> iterador = carrerasAsociadaANombre.iterador();
+            for (int i=0; i<carrerasAsociadaANombre.longitud();i++){
+                ICarrera carreraAsociada = iterador.siguiente();
+                carreraAsociada.materias.borrar(nombremateria); // borro la materia en su carrera
+            }
         }
     }
 
@@ -84,7 +95,7 @@ public class SistemaSIU {
     public boolean excedeCupo(String materia, String carrera){ // O(|c| + |m|)
         int[] docentes = plantelDocente(materia, carrera); // O(|c| + |m|)
         int cantAlumnos = inscriptos(materia, carrera); // O(|c| + |m|)
-        return min(250 * docentes[CargoDocente.PROF.ordinal()], 100*docentes[CargoDocente.JTP.ordinal()], 20*docentes[CargoDocente.AY1.ordinal()], 30*docentes[CargoDocente.AY2.ordinal()] ) <= cantAlumnos ; //O(1)
+        return min(250 * docentes[CargoDocente.PROF.ordinal()], 100*docentes[CargoDocente.JTP.ordinal()], 20*docentes[CargoDocente.AY1.ordinal()], 30*docentes[CargoDocente.AY2.ordinal()] ) < cantAlumnos ; //O(1)
     }
 
     public int min(int PROF, int JTP, int AY1, int AY2){

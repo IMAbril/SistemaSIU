@@ -1,11 +1,12 @@
 package aed;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class IMateria {
     ListaEnlazada<String> inscriptos ;
     int[] docentes;
-    DiccionarioDigital<String, ICarrera> carrerasAsociadas;
+    DiccionarioDigital<String, ListaEnlazada<ICarrera>> carrerasAsociadas;
 
     IMateria(){
         inscriptos = new ListaEnlazada<>();
