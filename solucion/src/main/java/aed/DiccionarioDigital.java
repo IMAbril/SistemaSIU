@@ -66,13 +66,14 @@ public class DiccionarioDigital<K,T> {
     public void borrar(String clave){
         Nodo<T> actual = raiz;
         Nodo<T> ultimoNodoUtil = raiz;
-
+        int ultimoIndiceUtil=0;
         for (int i= 0; i < clave.length(); i++){
             int pos = (int) clave.charAt(i);
             Nodo<T> siguiente = actual.siguientes.get(pos);
 
             if (siguiente.definicion != null || cantHijos(actual) > 1){
                 ultimoNodoUtil = actual.siguientes.get(pos);
+                ultimoIndiceUtil = i;
             }
 
             actual = siguiente;
@@ -86,7 +87,7 @@ public class DiccionarioDigital<K,T> {
         //si nodo actual no tiene hijos, borro los descendientes de ultimoNodoUtil en la posicion ultimoIndiceUtil
         if (cantHijos(actual)==0){
     
-            ultimoNodoUtil.siguientes = null;
+            ultimoNodoUtil.siguientes.set(ultimoIndiceUtil, null);
 
 
         }
