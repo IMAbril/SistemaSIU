@@ -41,7 +41,7 @@ public class SistemaSIU {
                 imateria.carrerasAsociadas.obtener(paresCarreraMateria[j].nombreMateria).agregarAtras(icarrera); // O(1+|n|)=O(|n|)
             } // O(∑_(n∈Nm)(|c| + |n|))
         } // O(∑_(m∈M)∑_(n∈Nm)(|c| + |n|)) ==> O(∑_(m∈M)∑_(n∈Nm)(|c|) + ∑_(m∈M)∑_(n∈Nm)(|n|)) ==> O(∑_(c∈C)|c|*|Mc| + ∑_(m∈M)∑_(n∈Nm)|n|)     
-        // ∑_(c∈C)|c|*|Mc| = |c_1|*|M_c1| + |c_2|*|M_c2|
+
         for (int i= 0; i<libretasUniversitarias.length; i++){ 
             estudiantes.definir(libretasUniversitarias[i],0);  // O(1) E veces(por que las lu estan acotadas)
         } // O(E)
