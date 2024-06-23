@@ -1,9 +1,12 @@
 package aed;
 
-// INVARIANTE DE REPRESENTACIÓN
-// No se repiten carreras ni libretas universitarias, es decir no hay claves repetidas en los diccionarios Carreras y Estudiantes.
-// Ningun estudiante puede tener mas inscripciones que la cantidad de materias.
-// La suma de las inscripciones de todos los estudiantes es igual a la suma de las longitudes de inscriptos para cada materia.
+// INVARIANTE DE REPRESENTACIÓN SistemaSIU
+// la cantidad de claves en carreras se mantiene para todas las operaciones (luego de llamar al constructor).
+// La cantidad de claves en estudiantes se mantiene para todas las operaciones (luego de llamar al constructor).
+// Ningún estudiante puede tener mas inscripciones que la unión de materias de sus carreras (vinculado con el invRep de IMateria).
+// La suma de las inscripciones de todos los estudiantes es igual a la suma de las longitudes de inscriptos para cada materia en el sistema (vinculado con el invRep de IMateria).
+// Cada carrera tiene al menos una materia (vinculado con el invRep de IMateria y el de ICarrera).
+
 public class SistemaSIU {
     DiccionarioDigital<String, ICarrera> carreras;
     DiccionarioDigital<String, Integer> estudiantes;
@@ -40,35 +43,35 @@ public class SistemaSIU {
                 icarrera.materias.definir(paresCarreraMateria[j].nombreMateria, imateria); // O(|n|)
                 imateria.carrerasAsociadas.obtener(paresCarreraMateria[j].nombreMateria).agregarAtras(icarrera); // O(1+|n|)=O(|n|)
             } // O(∑_(n∈Nm)(|c| + |n|))
-        } // O(∑_(m∈M)∑_(n∈Nm)(|c| + |n|)) ==> O(∑_(m∈M)∑_(n∈Nm)(|c|) + ∑_(m∈M)∑_(n∈Nm)(|n|)) ==> O(∑_(c∈C)|c|*|Mc| + ∑_(m∈M)∑_(n∈Nm)|n|)     
+        } // O(∑_(m∈M)∑_(n∈Nm)(|c| + |n|)) ==> O(∑_(m∈M)∑_(n∈Nm)|c| + ∑_(m∈M)∑_(n∈Nm)|n|) ==> O(∑_(c∈C)|c|*|Mc| + ∑_(m∈M)∑_(n∈Nm)|n|)     
 
         for (int i= 0; i<libretasUniversitarias.length; i++){ 
             estudiantes.definir(libretasUniversitarias[i],0);  // O(1) E veces(por que las lu estan acotadas)
         } // O(E)
     } //Total: O(∑_(c∈C)|c|*|Mc| + ∑_(m∈M)∑_(n∈Nm)|n| + E)
 
-    public void inscribir(String estudiante, String carrera, String materia){  // O(|c| + |m|)
+    public void inscribir(String estudiante, String carrera, String materia){  
         ICarrera icarrera = carreras.obtener(carrera); // O(|c|)
         IMateria imateria = icarrera.materias.obtener(materia); // O(|m|)
         imateria.inscriptos.agregarAdelante(estudiante); // O(1)
         int inscripciones = estudiantes.obtener(estudiante); // O(1) porque esta acotado
         inscripciones ++; //O(1)
         estudiantes.definir(estudiante, inscripciones); // O(1)
-    }
+    } //Total: O(|c| + |m|)
 
-    public void agregarDocente(CargoDocente cargo, String carrera, String materia){ // O(|c| + |m|)
+    public void agregarDocente(CargoDocente cargo, String carrera, String materia){ 
         ICarrera icarrera = carreras.obtener(carrera); // O(|c|)
         IMateria imateria = icarrera.materias.obtener(materia); // O(|m|)
         imateria.docentes[cargo.ordinal()] ++; // O(1)
-    }
+    } //Total: O(|c| + |m|)
 
-    public int[] plantelDocente(String materia, String carrera){ // O(|c| + |m|)
+    public int[] plantelDocente(String materia, String carrera){
         ICarrera icarrera = carreras.obtener(carrera); // O(|c|)
         IMateria imateria = icarrera.materias.obtener(materia); // O(|m|)
         return imateria.docentes; // O(1)
-    }
+    } // Total: O(|c| + |m|) 
 
-    public void cerrarMateria(String materia, String carrera){ // O(|c| + |m| + Em ∑_(n∈Nm)|n|)
+    public void cerrarMateria(String materia, String carrera){ 
         ICarrera icarrera = carreras.obtener(carrera); // O(|c|)
         IMateria imateria = icarrera.materias.obtener(materia); // O(|m|)
         ListaEnlazada<String> EstudiantesInscriptos = imateria.inscriptos; // O(1)
@@ -89,19 +92,19 @@ public class SistemaSIU {
                 carreraAsociada.materias.borrar(nombremateria); // O(|n|) borro la materia en su carrera
             }
         }
-    }
+    } //Total: O(|c| + |m| + Em + ∑_(n∈Nm)|n|)
 
-    public int inscriptos(String materia, String carrera){ // O(|c| + |m|)
+    public int inscriptos(String materia, String carrera){ 
         ICarrera icarrera = carreras.obtener(carrera); // O(|c|)
         IMateria imateria = icarrera.materias.obtener(materia); // O(|m|)
         return imateria.inscriptos.longitud(); //O(1)
-    }
+    } //Total: O(|c| + |m|)
 
     public boolean excedeCupo(String materia, String carrera){ // O(|c| + |m|)
         int[] docentes = plantelDocente(materia, carrera); // O(|c| + |m|)
         int cantAlumnos = inscriptos(materia, carrera); // O(|c| + |m|)
         return min(250 * docentes[CargoDocente.PROF.ordinal()], 100*docentes[CargoDocente.JTP.ordinal()], 20*docentes[CargoDocente.AY1.ordinal()], 30*docentes[CargoDocente.AY2.ordinal()] ) < cantAlumnos ; //O(1)
-    }
+    } //Total: O(|c|+|m|) 
 
     public int min(int PROF, int JTP, int AY1, int AY2){ // O(1)
         int minimo = 0;
@@ -120,18 +123,18 @@ public class SistemaSIU {
                 }
             }
         } return minimo;
-    }
+    } // Total: O(1)
 
     public String[] carreras(){
-        return carreras.clavesOrdenadas(); // O(∑_(c∈C)|c|)
-    }
+        return carreras.clavesOrdenadas(); 
+    } //Total: O(∑_(c∈C)|c|)
 
     public String[] materias(String carrera){
         ICarrera icarrera = carreras.obtener(carrera); //O(|c|)
         return icarrera.materias.clavesOrdenadas(); // O(∑_(mc∈Mc)|mc|). En particular, la complejidad de claves ordenadas es la suma de las longitudes de todas las claves en el diccionario
-    }
+    } // Total: O(|c| + ∑_(mc∈Mc)|mc|)
 
     public int materiasInscriptas(String estudiante){
         return estudiantes.obtener(estudiante); //O(1) pq estudiante esta acotado
-    }
+    } // Total: O(1)
 }
