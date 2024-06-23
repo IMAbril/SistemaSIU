@@ -44,7 +44,10 @@ public class SistemaSIU {
                 imateria.carrerasAsociadas.obtener(paresCarreraMateria[j].nombreMateria).agregarAtras(icarrera); // O(1+|n|)=O(|n|)
             } // O(∑_(n∈Nm)(|c| + |n|))
         } // O(∑_(m∈M)∑_(n∈Nm)(|c| + |n|)) ==> O(∑_(m∈M)∑_(n∈Nm)|c| + ∑_(m∈M)∑_(n∈Nm)|n|) ==> O(∑_(c∈C)|c|*|Mc| + ∑_(m∈M)∑_(n∈Nm)|n|)     
-
+        // O(∑_(m∈M)∑_(n∈Nm)|c|) = O(∑_(c∈C)|c|*|Mc|) porque tener O(|c|) |Mc| (cantidad de materias de esa carrera) veces por cada carrera 
+        // es lo mismo que tener O(|c|) |Nm| (cantidad de nombres de una materia, equivalente a cantidad de carreras asociadas a esa materia)
+        // veces por cada materia. 
+        
         for (int i= 0; i<libretasUniversitarias.length; i++){ 
             estudiantes.definir(libretasUniversitarias[i],0);  // O(1) E veces(por que las lu estan acotadas)
         } // O(E)
