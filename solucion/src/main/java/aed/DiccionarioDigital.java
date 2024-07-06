@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class DiccionarioDigital<K,T> {
     private Nodo<T> raiz;
     private int tamanio;
+    private ArrayList<String> claves;
 
     private class Nodo<T> {
         ArrayList<Nodo<T>> siguientes;
@@ -22,6 +23,7 @@ public class DiccionarioDigital<K,T> {
     public DiccionarioDigital(){
         raiz = new Nodo<>();
         tamanio = 0; //cantidad de claves
+        claves = new ArrayList<>(); 
     }
 
     public boolean diccionarioVacio(){
@@ -50,6 +52,7 @@ public class DiccionarioDigital<K,T> {
         }
         if (actual.definicion == null){
             tamanio++;
+            claves.add(clave);
         }
         actual.definicion = valor;
     }
@@ -114,14 +117,14 @@ public class DiccionarioDigital<K,T> {
     public String[] clavesOrdenadas() {
         String[] claves = new String[tamanio];
         int[] cantClaves = new int[1];
-        acumularClaves(raiz,"", claves, cantClaves); 
+        acumularClaves(raiz,new StringBuilder(), claves, cantClaves); 
         return claves;
     }
 
-    private void acumularClaves(Nodo<T> nodo, String prefijo, String[] claves, int[] cantClaves) {
+    private void acumularClaves(Nodo<T> nodo, StringBuilder prefijo, String[] claves, int[] cantClaves) {
         // O(1)
         if (nodo.definicion != null) {
-            claves[cantClaves[0]] = prefijo;
+            claves[cantClaves[0]] = prefijo.toString();
             cantClaves[0]++;
         } 
         // En el peor caso, cada nodo tiene 256 hijos no nulos, y cada llamada recursiva hace otras 256 llamadas recursivas.
@@ -129,8 +132,9 @@ public class DiccionarioDigital<K,T> {
         for (int i = 0; i < 256; i++) { 
             if (nodo.siguientes.get(i) != null) {
                 char c = (char) i;
-                String nuevoPrefijo = prefijo + c;
-                acumularClaves(nodo.siguientes.get(i), nuevoPrefijo, claves, cantClaves);
+                prefijo.append(c);
+                acumularClaves(nodo.siguientes.get(i), prefijo, claves, cantClaves);
+                prefijo.deleteCharAt(prefijo.length() - 1);
             }
         }
     }
