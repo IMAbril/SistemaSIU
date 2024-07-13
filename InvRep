@@ -1,0 +1,17 @@
+Invariantes de representacion
+SistemaSIU:
+-La cantidad de inscripciones de cada estudiante tiene que ser igual a la sumatoria de las veces que dicho estudiante aparece en la lista de inscriptos de alguna materia
+-La suma de las inscripciones de todos los estudiantes es igual a la suma de las longitudes de inscriptos para cada materia en el sistema.
+-Cada carrera tiene al menos una materia.
+-Para cada estudiante en el diccionario estudiantes, sus inscripciones son mayores o iguales que 0
+-La cantidad de inscripciones de un estudiante tiene q ser menor o igual que la cantidad de materias que tiene cada carrera en la que esta inscripto el estudiante(creo q esto no va pq no estan inscriptos a carreras sino a materias)
+-La cantidad de claves del diccionario estudiantes es igual a la longitud de el arreglo libretasUniversitarias(no se si podemos hablar de los datos de entrada)
+
+Carrera:
+-Cada carrera tiene al menos una materia(materias.tamanio > 0)
+
+Materia(no cambie nada):
+-Cada materia tiene al menos una carrera asociada (carrerasAsociadas.tamanio > 0)
+-Cada carrera en el significado de la clave (nombreMateria) en carrerasAsociadas tiene una única materia con el mismo nombre, los mismos inscriptos y los mismos docentes.
+-Para todo estudiante en la lista inscriptos, la longitud de inscripciones es mayor a 0. (NO DEBERIA SER "SUS INSCRIPCIONES SON MAYORES A 0?", POR Q LONGITUD?)
+-Todo elemento de docentes es mayor o igual a 0
